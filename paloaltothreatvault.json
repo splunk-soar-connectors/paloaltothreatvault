@@ -1,51 +1,413 @@
 {
-    "appid": "ffffffff-ffff-4fff-afff-ffffffffffff",
-    "name": "Example App Name",
-    "description": "Brief description of the app",
-    "type": "information",
-    "product_vendor": "Vendor Name",
-    "logo": "logo.svg",
-    "logo_dark": "logo_dark.svg",
-    "product_name": "Product Name",
+    "appid": "d56f72eb-becb-4774-b1c2-73a73a751330",
+    "name": "Palo Alto Threat Vault",
+    "description": "This is for Palo Alto Threat Vault",
+    "type": "reputation",
+    "product_vendor": "Palo Alto",
+    "logo": "PANW.svg",
+    "logo_dark": "PANW_dark.svg",
+    "product_name": "Threat Vault",
+    "python_version": "3",
     "product_version_regex": ".*",
-    "publisher": "Splunk",
-    "license": "Copyright (c) 2025 Splunk Inc.",
-    "app_version": "1.0.1",
-    "latest_tested_versions": [
-        "Version X.Y.Z, Month Year"
+    "publisher": "Palo Alto",
+    "contributors": [
+        {
+            "name": "Trisha Pancho"
+        }
     ],
-    "utctime_updated": "2025-08-01T20:30:47.300351Z",
+    "license": "Copyright (c) Palo Alto, 2023",
+    "app_version": "1.1.0",
+    "utctime_updated": "2025-09-04T07:42:42.197768Z",
     "package_name": "phantom_paloaltothreatvault",
     "main_module": "paloaltothreatvault_connector.py",
-    "app_config_render": "default",
-    "min_phantom_version": "6.3.0",
-    "python_version": "3.9, 3.13",
-    "fips_compliant": true,
+    "min_phantom_version": "5.3.2.88192",
     "app_wizard_version": "1.0.0",
     "configuration": {
-        "host": {
-            "data_type": "string",
+        "API key": {
+            "description": "API Key for PA Threat Vault",
+            "data_type": "password",
+            "required": true,
             "order": 0,
-            "description": "Example Hostname or IP address",
-            "required": true
-        },
-        "api_key": {
-            "data_type": "string",
-            "order": 1,
-            "description": "Example API Key for authentication",
-            "required": true
+            "name": "API key",
+            "id": 0
         }
     },
     "actions": [
         {
             "action": "test connectivity",
             "identifier": "test_connectivity",
-            "description": "Validate the asset configuration for connectivity",
+            "description": "Validate the asset configuration for connectivity using supplied configuration",
+            "verbose": "",
             "type": "test",
             "read_only": true,
             "parameters": {},
             "output": [],
             "versions": "EQ(*)"
+        },
+        {
+            "action": "threat id lookup",
+            "identifier": "fetchdata",
+            "description": "fetch data for PA Threat Id",
+            "verbose": "",
+            "type": "generic",
+            "read_only": false,
+            "parameters": {
+                "threat_id": {
+                    "description": "threatid",
+                    "data_type": "string",
+                    "required": true,
+                    "primary": true,
+                    "contains": [
+                        "threat_id"
+                    ],
+                    "value_list": [],
+                    "default": "",
+                    "order": 0,
+                    "name": "threat_id",
+                    "id": 1,
+                    "param_name": "threat_id"
+                }
+            },
+            "output": [
+                {
+                    "data_path": "action_result.parameter.threat_id",
+                    "data_type": "string",
+                    "contains": [
+                        "threat_id"
+                    ],
+                    "column_name": "threat_id",
+                    "column_order": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.*.name",
+                    "data_type": "string",
+                    "contains": [],
+                    "column_name": "Threat Name",
+                    "column_order": 1
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.*.category",
+                    "data_type": "string",
+                    "contains": [],
+                    "column_name": "Category",
+                    "column_order": 2
+                },
+                {
+                    "data_path": "action_result.data.*.data.*.*.description",
+                    "data_type": "string",
+                    "contains": [],
+                    "column_name": "Description",
+                    "column_order": 3
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric"
+                }
+            ],
+            "render": {
+                "type": "table"
+            },
+            "versions": "EQ(*)"
+        },
+        {
+            "action": "cve lookup",
+            "identifier": "cve_lookup",
+            "description": "Look up CVE in PA Threat Vault",
+            "verbose": "Look up CVE in PA Threat Vault",
+            "type": "generic",
+            "read_only": false,
+            "parameters": {
+                "cve": {
+                    "description": "cve in the alert",
+                    "data_type": "string",
+                    "required": true,
+                    "primary": true,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 0,
+                    "name": "cve",
+                    "id": 1,
+                    "param_name": "cve"
+                }
+            },
+            "output": [
+                {
+                    "data_path": "action_result.parameter.cve",
+                    "data_type": "string",
+                    "contains": [],
+                    "column_name": "cve",
+                    "column_order": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.vulnerability.*.name",
+                    "data_type": "string",
+                    "contains": [],
+                    "column_name": "name",
+                    "column_order": 1
+                },
+                {
+                    "data_path": "action_result.data.*.data.vulnerability.*.category",
+                    "data_type": "string",
+                    "contains": [],
+                    "column_name": "category",
+                    "column_order": 2
+                },
+                {
+                    "data_path": "action_result.data.*.data.vulnerability.*.severity",
+                    "data_type": "string",
+                    "contains": [],
+                    "column_name": "severity",
+                    "column_order": 3
+                },
+                {
+                    "data_path": "action_result.data.*.data.vulnerability.*.description",
+                    "data_type": "string",
+                    "contains": [],
+                    "column_name": "description",
+                    "column_order": 4
+                },
+                {
+                    "data_path": "action_result.data.*.data.vulnerability.*.reference",
+                    "data_type": "string",
+                    "contains": [],
+                    "column_name": "reference",
+                    "column_order": 5
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric"
+                }
+            ],
+            "render": {
+                "type": "table"
+            },
+            "versions": "EQ(*)"
+        },
+        {
+            "action": "hash lookup",
+            "identifier": "hash_lookup",
+            "description": "SHA256 lookup on Threat Vault",
+            "verbose": "SHA256 lookup on Threat Vault",
+            "type": "generic",
+            "read_only": false,
+            "parameters": {
+                "sha256": {
+                    "description": "SHA256 hash",
+                    "data_type": "string",
+                    "required": true,
+                    "primary": true,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 0,
+                    "name": "sha256",
+                    "id": 1,
+                    "param_name": "sha256"
+                }
+            },
+            "output": [
+                {
+                    "data_path": "action_result.parameter.sha256",
+                    "data_type": "string",
+                    "contains": [],
+                    "column_name": "sha256",
+                    "column_order": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.fileinfo.*.signatures.*.*.name",
+                    "data_type": "string",
+                    "contains": [],
+                    "column_name": "name",
+                    "column_order": 1
+                },
+                {
+                    "data_path": "action_result.data.*.data.fileinfo.*.sha1",
+                    "data_type": "string",
+                    "contains": [],
+                    "column_name": "sha1",
+                    "column_order": 2
+                },
+                {
+                    "data_path": "action_result.data.*.data.fileinfo.*.md5",
+                    "data_type": "string",
+                    "contains": [],
+                    "column_name": "md5",
+                    "column_order": 3
+                },
+                {
+                    "data_path": "action_result.data.*.data.fileinfo.*.type",
+                    "data_type": "string",
+                    "contains": [],
+                    "column_name": "type",
+                    "column_order": 4
+                },
+                {
+                    "data_path": "action_result.data.*.data.fileinfo.*.family",
+                    "data_type": "string",
+                    "contains": [],
+                    "column_name": "family",
+                    "column_order": 5
+                },
+                {
+                    "data_path": "action_result.data.*.data.fileinfo.*.family",
+                    "data_type": "string",
+                    "contains": [],
+                    "column_name": "family",
+                    "column_order": 6
+                },
+                {
+                    "data_path": "action_result.data.*.data.fileinfo.*.filetype",
+                    "data_type": "string",
+                    "contains": [],
+                    "column_name": "filetype",
+                    "column_order": 7
+                },
+                {
+                    "data_path": "action_result.data.*.data.fileinfo.*.platform",
+                    "data_type": "string",
+                    "contains": [],
+                    "column_name": "platform",
+                    "column_order": 8
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric"
+                }
+            ],
+            "render": {
+                "type": "table"
+            },
+            "versions": "EQ(*)"
+        },
+        {
+            "action": "get cve coverage",
+            "identifier": "get_cve_coverage",
+            "description": "get CVE coverage information",
+            "verbose": "The Threat Vault API can be used to request CVE Coverage information.",
+            "type": "generic",
+            "read_only": false,
+            "parameters": {
+                "cve_id": {
+                    "description": "cve id",
+                    "data_type": "string",
+                    "required": true,
+                    "primary": true,
+                    "contains": [],
+                    "value_list": [],
+                    "default": "",
+                    "order": 0,
+                    "name": "cve_id",
+                    "id": 1,
+                    "param_name": "cve_id"
+                }
+            },
+            "output": [
+                {
+                    "data_path": "action_result.parameter.cve_id",
+                    "data_type": "string",
+                    "contains": [],
+                    "column_name": "cve",
+                    "column_order": 0
+                },
+                {
+                    "data_path": "action_result.data.*.data.vulnerability.*.name",
+                    "data_type": "string",
+                    "contains": [],
+                    "column_name": "name",
+                    "column_order": 1
+                },
+                {
+                    "data_path": "action_result.data.*.data.cve_status",
+                    "data_type": "string",
+                    "contains": [],
+                    "column_name": "cve_status",
+                    "column_order": 2
+                },
+                {
+                    "data_path": "action_result.data.*.data.vulnerability.*.description",
+                    "data_type": "string",
+                    "contains": [],
+                    "column_name": "description",
+                    "column_order": 3
+                },
+                {
+                    "data_path": "action_result.data.*.data.vulnerability.*.severity",
+                    "data_type": "string",
+                    "contains": [],
+                    "column_name": "severity",
+                    "column_order": 4
+                },
+                {
+                    "data_path": "action_result.data.*.data.vulnerability.*.category",
+                    "data_type": "string",
+                    "contains": [],
+                    "column_name": "category",
+                    "column_order": 5
+                },
+                {
+                    "data_path": "action_result.data.*.data.vulnerability.*.reference",
+                    "data_type": "string",
+                    "contains": [],
+                    "column_name": "reference",
+                    "column_order": 6
+                },
+                {
+                    "data_path": "action_result.data.*.data.nvd_link",
+                    "data_type": "string",
+                    "contains": [],
+                    "column_name": "nvd_link",
+                    "column_order": 7
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric"
+                }
+            ],
+            "render": {
+                "type": "table"
+            },
+            "versions": "EQ(*)"
         }
-    ]
+    ],
+    "copied_from_id": 193,
+    "copied_from_version": "1.0.0",
+    "directory": "paloaltothreatvault_d56f72eb-becb-4774-b1c2-73a73a751330",
+    "version": 1,
+    "appname": "-",
+    "executable": "spawn3",
+    "disabled": false,
+    "custom_made": true
 }
